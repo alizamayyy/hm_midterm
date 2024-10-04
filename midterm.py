@@ -10,6 +10,9 @@ import streamlit as st  # Added Streamlit import
 # Load the dataset
 df = pd.read_csv('HappinessAlcoholConsumption.csv')
 
+# Define the columns to be used in various analyses
+columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
+
 # Streamlit app setup
 st.title('Happiness and Alcohol Consumption Analysis')
 
@@ -34,7 +37,6 @@ elif options == "Data Cleaning":
 
 elif options == "Statistics":
     st.subheader("Statistics")
-    columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
     
     for column in columns:
         st.write(f"Statistics for '{column}':")
@@ -85,7 +87,6 @@ elif options == "Statistics":
 
 elif options == "Correlation Heatmap":
     st.subheader("Correlation Heatmap")
-    columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
     df_selected = df[columns]
     correlation_matrix = df_selected.corr()
     
@@ -122,8 +123,7 @@ elif options == "Regional Alcohol Consumption":
 
 elif options == "Average Alcohol Consumption":
     st.subheader("Average Values of Alcohol Per Capita")
-    columns = ['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
-    mean_values = df[columns].mean().reset_index()
+    mean_values = df[columns[3:]].mean().reset_index()  # Only use alcohol columns
     mean_values.columns = ['Metric', 'Average Value']
     
     plt.figure(figsize=(10, 6))
