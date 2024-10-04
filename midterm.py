@@ -10,6 +10,9 @@ import streamlit as st  # Added Streamlit import
 # Load the dataset
 df = pd.read_csv('HappinessAlcoholConsumption.csv')
 
+# Calculate the average alcohol consumption per capita
+df['Avg_Alcohol_PerCapita'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
+
 # Define the columns to be used in various analyses
 columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
 
@@ -136,7 +139,6 @@ elif options == "Average Alcohol Consumption":
 
 elif options == "Choropleth Map":
     st.subheader("Choropleth Map of Average Alcohol Consumption")
-    df['Avg_Alcohol_PerCapita'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
     
     fig = px.choropleth(df, 
                         locations='Country', 
