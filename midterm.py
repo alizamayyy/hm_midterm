@@ -25,68 +25,60 @@ options = st.sidebar.selectbox("Select a section:",
                                  "Data Visualization", "Conclusion"])
 
 if options == "Introduction":
-    st.write("This application analyzes the relationship between happiness and alcohol consumption.")
-    st.write("The dataset used contains information on happiness scores and alcohol consumption per capita across various countries.")
+    st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True)  # Add the author's name in small font
+    st.write("Happiness and well-being are increasingly central themes in global discussions about public health, societal development, and policy making. One aspect of human behavior that has been closely studied in relation to mental health and happiness is alcohol consumption.")
+    st.write("Does higher alcohol consumption lead to lower happiness levels? Or are happier countries more likely to have higher alcohol consumption due to social factors?")
     st.write("The aim of this analysis is to explore how alcohol consumption correlates with happiness levels.")
+    st.write("The dataset is taken from [Kaggle](https://www.kaggle.com/datasets/marcospessotto/happiness-and-alcohol-consumption).")
 
 elif options == "Data Exploration and Cleaning":
     st.subheader("Data Overview")
     st.write(df.head())  # Display the first few rows of the DataFrame
-    st.write("### Checking for Missing Values")
+    st.write("### Data Cleaning")
     st.write(df.isnull().sum())  # Check for missing values
-    st.write("### Data Information")
-    st.write(df.info())  # Display DataFrame info
 
     st.subheader("Descriptive Statistics")
+
+    # Create a list to hold the statistics for each column
+    stats_list = []
+
     for column in columns:
-        st.write(f"Statistics for '{column}':")
         data = df[column]
         
-        # Central Tendency
+        # Calculate statistics
         mean_val = data.mean()
         median_val = data.median()
         mode_val = data.mode().iloc[0] if not data.mode().empty else np.nan
-        
-        st.write(f"  Mean: {mean_val}")
-        st.write(f"  Median: {median_val}")
-        st.write(f"  Mode: {mode_val}")
-
-        # Spread of Data
         std_val = data.std()
         var_val = data.var()
-        
-        st.write(f"  Standard Deviation: {std_val}")
-        st.write(f"  Variance: {var_val}")
-
-        # Min, Max, and Range
         min_val = data.min()
         max_val = data.max()
         range_val = max_val - min_val
-        
-        st.write(f"  Min: {min_val}")
-        st.write(f"  Max: {max_val}")
-        st.write(f"  Range: {range_val}")
-
-        # Percentiles
         percentiles = np.percentile(data.dropna(), [25, 50, 75])
-        st.write(f"  25th Percentile: {percentiles[0]}")
-        st.write(f"  50th Percentile (Median): {percentiles[1]}")
-        st.write(f"  75th Percentile: {percentiles[2]}")
+        
+        # Append the statistics to the list
+        stats_list.append({
+            "Statistic": column,
+            "Mean": mean_val,
+            "Median": median_val,
+            "Mode": mode_val,
+            "Standard Deviation": std_val,
+            "Variance": var_val,
+            "Min": min_val,
+            "Max": max_val,
+            "Range": range_val,
+            "25th Percentile": percentiles[0],
+            "50th Percentile (Median)": percentiles[1],
+            "75th Percentile": percentiles[2]
+        })
 
-        # Summary Statistics
-        summary = stats.describe(data.dropna())
-        st.write("\n  Summary Statistics from scipy.stats.describe:")
-        st.write(f"  Count: {summary.nobs}")
-        st.write(f"  Min: {summary.minmax[0]}")
-        st.write(f"  Max: {summary.minmax[1]}")
-        st.write(f"  Mean: {summary.mean}")
-        st.write(f"  Variance: {summary.variance}")
-        st.write(f"  Skewness: {summary.skewness}")
-        st.write(f"  Kurtosis: {summary.kurtosis}")
-        st.write("\n" + "-"*50)
+    # Create a DataFrame from the statistics list
+    stats_df = pd.DataFrame(stats_list)
+
+    # Display the DataFrame as a table in Streamlit
+    st.dataframe(stats_df)  # or use st.table(stats_df) for a static table
 
 elif options == "Data Visualization":
-    st.subheader("Data Visualization Options")
     visualization_option = st.sidebar.selectbox("Select a visualization type:", 
                                                  ["Heatmap", "Box Plot", "Histogram", 
                                                   "Grouped Bar Chart", "Bar Chart", 
@@ -95,6 +87,7 @@ elif options == "Data Visualization":
 
     if visualization_option == "Heatmap":
         st.subheader("Correlation Heatmap")
+    
         df_selected = df[columns]
         correlation_matrix = df_selected.corr()
         
@@ -102,6 +95,9 @@ elif options == "Data Visualization":
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
         plt.title('Correlation Heatmap of Happiness and Alcohol Consumption')
         st.pyplot(plt)
+
+        # Add explanatory text below the heatmap
+        st.write("The heatmap indicates that improving HDI and GDP may play significant roles in enhancing happiness, while alcohol consumption, particularly beer, contributes positively but is less central to the overall happiness score.")
 
     elif visualization_option == "Box Plot":
         st.subheader("Box Plot of Various Metrics")
@@ -114,15 +110,27 @@ elif options == "Data Visualization":
         plt.ylabel('Metric')
         plt.grid(True)
         st.pyplot(plt)
+        # Add explanatory text below the heatmap
+        st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
+
 
     elif visualization_option == "Histogram":
-        st.subheader("Histogram of Happiness Scores")
-        plt.figure(figsize=(10, 6))
-        sns.histplot(df['HappinessScore'], bins=20, kde=True)
-        plt.title('Histogram of Happiness Scores')
-        plt.xlabel('Happiness Score')
-        plt.ylabel('Frequency')
+        st.subheader("Histograms of Various Metrics")
+    
+        plt.figure(figsize=(15, 10))
+        for i, column in enumerate(columns):
+            plt.subplot(2, 3, i + 1)  # Create a 2x3 grid of subplots
+            sns.histplot(df[column], bins=20, kde=True, color='blue', alpha=0.7)
+            plt.title(f'Histogram of {column}')
+            plt.xlabel(column)
+            plt.ylabel('Frequency')
+
+        plt.tight_layout()  
+        plt.suptitle('Histograms of Various Metrics', y=1.02)  
         st.pyplot(plt)
+        
+        st.write("The histograms provide a visual representation of the distribution of various metrics related to happiness, human development, economic prosperity, and alcohol consumption.")
+
 
     elif visualization_option == "Grouped Bar Chart":
         st.subheader("Grouped Bar Chart of Average Alcohol Consumption by Region")
@@ -137,6 +145,9 @@ elif options == "Data Visualization":
         plt.ylabel('Average Per Capita Consumption')
         plt.legend(title='Alcohol Type')
         st.pyplot(plt)
+        
+        st.write("Consumption patterns highlight distinct regional preferences, with Western Europe favoring wine, while North America and Central & Eastern Europe prefer beer and spirits, respectively.")
+
 
     elif visualization_option == "Bar Chart":
         st.subheader("Bar Chart of Average Alcohol Consumption")
@@ -149,6 +160,8 @@ elif options == "Data Visualization":
         plt.xlabel('Type of Alcohol')
         plt.ylabel('Average Consumption')
         st.pyplot(plt)
+        
+        st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")
 
     elif visualization_option == "Horizontal Bar Chart":
         st.subheader("Horizontal Bar Chart of Average Happiness Scores by Region")
@@ -160,6 +173,9 @@ elif options == "Data Visualization":
         plt.xlabel('Average Happiness Score')
         plt.ylabel('Region')
         st.pyplot(plt)
+        
+        st.write("The chart highlights the top 10 countries with the highest total alcohol consumption per capita, measured in liters.")
+
 
     elif visualization_option == "Choropleth Map":
         st.subheader("Choropleth Map of Average Alcohol Consumption")
@@ -174,6 +190,8 @@ elif options == "Data Visualization":
                             title='Average Alcohol Consumption Per Capita by Country')
         
         st.plotly_chart(fig)
+        
+        st.write("This map visualizes the average alcohol consumption per capita by country, where each country is colored according to the level of alcohol consumption.")
 
     elif visualization_option == "Pair Plot":
         st.subheader("Pair Plot of Various Metrics with Trendlines")
@@ -183,6 +201,8 @@ elif options == "Data Visualization":
         })
         plt.suptitle('Pair Plot of Various Metrics with Trendlines', y=1.02)
         st.pyplot(plt)
+        
+        st.write("The graph indicates that improving HDI and economic conditions can significantly enhance happiness levels.")
 
     elif visualization_option == "Scatter Plots":
         st.subheader("Scatter Plots")
@@ -195,6 +215,8 @@ elif options == "Data Visualization":
         plt.xlabel('Human Development Index (HDI)')
         plt.ylabel('Happiness Score')
         st.pyplot(plt)
+        
+        st.write("The graph effectively illustrates that while there is a general trend of increased happiness with higher HDI, regional differences suggest a complex interplay of various factors influencing happiness.")
 
         # HDI vs Average Alcohol Consumption
         plt.figure(figsize=(10, 6))
@@ -204,6 +226,8 @@ elif options == "Data Visualization":
         plt.xlabel('Average Alcohol Consumption Per Capita (L)')
         plt.ylabel('Human Development Index (HDI)')
         st.pyplot(plt)
+        
+        st.write("There is a positive correlation between average alcohol consumption per capita and Human Development Index (HDI) across most regions, indicating that higher alcohol consumption often coincides with higher HDI.")
 
         # Happiness Score vs Average Alcohol Consumption
         plt.figure(figsize=(10, 6))
@@ -213,9 +237,17 @@ elif options == "Data Visualization":
         plt.xlabel('Average Alcohol Consumption Per Capita (L)')
         plt.ylabel('Happiness Score')
         st.pyplot(plt)
+        
+        st.write("The relationship between alcohol consumption and happiness scores varies significantly across different regions. While some regions show a positive correlation, others show little to no correlation or even a negative correlation.")
 
 elif options == "Conclusion":
     st.write("### Conclusion")
     st.write("This analysis provides insights into the relationship between happiness and alcohol consumption.")
-    st.write("The visualizations and statistics reveal patterns that can help understand how these factors interact.")
-    st.write("Further research could explore causal relationships and the impact of other variables.")
+    
+    # Add key findings in bullet form
+    st.write("**Key findings include:**")
+    st.write("- **Correlations:** A moderate positive correlation exists between happiness scores and GDP per capita and HDI, emphasizing the importance of economic factors in influencing happiness. Moderate correlations between happiness and beer, spirits, and wine suggest a nuanced relationship between alcohol consumption and happiness.")
+    st.write("- **Regional Patterns:** The box plot and bar chart showcase the variability in metrics and highlight significant differences in alcohol consumption across regions, suggesting that cultural and economic factors heavily influence drinking habits.")
+    st.write("- **Cultural Influence:** The cultural context appears to shape not just consumption patterns but also overall happiness levels, reflecting the complex interplay between economic indicators, societal norms, and personal well-being.")
+    
+    st.write("Overall, the insights gleaned from this dataset could serve as a basis for further studies and policy discussions aimed at improving happiness and well-being through both economic development and cultural understanding.")
