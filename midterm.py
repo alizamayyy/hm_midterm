@@ -5,9 +5,8 @@ from scipy import stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-import streamlit as st  # Added Streamlit import
+import streamlit as st
 
-# Load the dataset
 df = pd.read_csv('HappinessAlcoholConsumption.csv')
 
 # Calculate the average alcohol consumption per capita
@@ -16,7 +15,6 @@ df['Avg_Alcohol_PerCapita'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_Pe
 # Define the columns to be used in various analyses
 columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
 
-# Streamlit app setup
 st.title('Happiness and Alcohol Consumption Analysis')
 
 # Sidebar for navigation
@@ -33,9 +31,9 @@ if options == "Introduction":
 
 elif options == "Data Exploration and Cleaning":
     st.subheader("Data Overview")
-    st.write(df.head())  # Display the first few rows of the DataFrame
+    st.write(df.head())
     st.write("### Data Cleaning")
-    st.write(df.isnull().sum())  # Check for missing values
+    st.write(df.isnull().sum()) 
 
     st.subheader("Descriptive Statistics")
 
@@ -76,7 +74,7 @@ elif options == "Data Exploration and Cleaning":
     stats_df = pd.DataFrame(stats_list)
 
     # Display the DataFrame as a table in Streamlit
-    st.dataframe(stats_df)  # or use st.table(stats_df) for a static table
+    st.dataframe(stats_df) 
 
 elif options == "Data Visualization":
     visualization_option = st.sidebar.selectbox("Select a visualization type:", 
@@ -96,7 +94,6 @@ elif options == "Data Visualization":
         plt.title('Correlation Heatmap of Happiness and Alcohol Consumption')
         st.pyplot(plt)
 
-        # Add explanatory text below the heatmap
         st.write("The heatmap indicates that improving HDI and GDP may play significant roles in enhancing happiness, while alcohol consumption, particularly beer, contributes positively but is less central to the overall happiness score.")
 
     elif visualization_option == "Box Plot":
@@ -110,7 +107,7 @@ elif options == "Data Visualization":
         plt.ylabel('Metric')
         plt.grid(True)
         st.pyplot(plt)
-        # Add explanatory text below the heatmap
+        
         st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
 
 
@@ -119,7 +116,7 @@ elif options == "Data Visualization":
     
         plt.figure(figsize=(15, 10))
         for i, column in enumerate(columns):
-            plt.subplot(2, 3, i + 1)  # Create a 2x3 grid of subplots
+            plt.subplot(2, 3, i + 1) 
             sns.histplot(df[column], bins=20, kde=True, color='blue', alpha=0.7)
             plt.title(f'Histogram of {column}')
             plt.xlabel(column)
@@ -244,7 +241,6 @@ elif options == "Conclusion":
     st.write("### Conclusion")
     st.write("This analysis provides insights into the relationship between happiness and alcohol consumption.")
     
-    # Add key findings in bullet form
     st.write("**Key findings include:**")
     st.write("- **Correlations:** A moderate positive correlation exists between happiness scores and GDP per capita and HDI, emphasizing the importance of economic factors in influencing happiness. Moderate correlations between happiness and beer, spirits, and wine suggest a nuanced relationship between alcohol consumption and happiness.")
     st.write("- **Regional Patterns:** The box plot and bar chart showcase the variability in metrics and highlight significant differences in alcohol consumption across regions, suggesting that cultural and economic factors heavily influence drinking habits.")
