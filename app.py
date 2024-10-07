@@ -1,49 +1,56 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 st.set_page_config(page_title="Kanpai!!", page_icon=":beer:", layout="wide", initial_sidebar_state="auto")
 
-def show_csv():
-    df = pd.read_csv('HappinessAlcoholConsumption.csv')
+# Load dataset
+df = pd.read_csv('HappinessAlcoholConsumption.csv')
+columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
+
+# Functions
+def show_csv(df):
     st.dataframe(df, use_container_width=True)
     st.write("\n")
     return df
     
-def data_cleaning(df):
+def clean_csv(df):
     st.subheader("Cleaning the Dataset")
-    st.write("_Insert the process/es of cleaning the dataset._")
     
     col1, col2 = st.columns(2)
     
     with col1:
         st.write("__Handling Missing Values__")
-        st.write("_Insert the process/es of handling missing values._")
+        df.dropna(inplace=True) 
         
-        # insert data cleaning process
-        cleaned_df = show_csv() 
-        
+        code = '''
+        df.dropna(inplace=True)'''
+        st.code(code, language="python")
+ 
         st.write("_Insert the analysis after the process._")
         
     with col2:
         st.write("__Handling Duplicate Data__")
-        st.write("_Insert the process/es of handling duplicate data._")
-        
-        # insert data cleaning process
-        cleaned_df = show_csv()
+        df.drop_duplicates(inplace=True) 
+    
+        code = '''
+        df.drop_duplicates(inplace=True) '''
+        st.code(code, language="python")
         
         st.write("_Insert the analysis after the process._")
         
+    # with st.expander("Show Cleaned Dataset", expanded=True):
+    #         st.dataframe(df, use_container_width=True)
     st.write("\n")
-    return cleaned_df
+    return df
     
-def exploring_stats(df):
+def explore_stats(df, columns):
     st.subheader("Exploring Statistics")
-    st.write("_Insert description of the statistics to get and how._")
     
     stats_list = []
     
-    columns = ['HappinessScore', 'HDI', 'GDP_PerCapita', 'Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']
     for column in columns:
         data = df[column]
         
@@ -81,14 +88,27 @@ def exploring_stats(df):
     st.write("_Insert the analysis after the process._")
     st.write("\n")
     
+def heatmap(df, columns):
+    
+    st.subheader("Correlation Heatmap")
+    
+    selected_col = df[columns]
+    correlation_matrix = selected_col.corr()
+        
+    plt.figure(figsize=(10, 6))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+    plt.title('Correlation Heatmap of Happiness and Alcohol Consumption')
+    st.pyplot(plt)
 
-st.header("Happiness and Alcohol Consumption Analysis") 
+    st.write("The heatmap indicates that improving HDI and GDP may play significant roles in enhancing happiness, while alcohol consumption, particularly beer, contributes positively but is less central to the overall happiness score.")
 
-# Sidebar for navigation
+# Sidebar
 options = st.sidebar.selectbox("Select a section:", 
                                 ["Introduction", "Data Exploration and Preparation", 
                                  "Data Visualization", "Conclusion"])
 
+# Application
+st.header("Happiness and Alcohol Consumption Analysis") 
 
 if options == "Introduction":
     st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True) 
@@ -96,12 +116,18 @@ if options == "Introduction":
 
 elif options == "Data Exploration and Preparation":
     st.subheader("Dataset Overview")
-    st.write("_Insert description of the dataset here._")
+    st.write("_Insert short description of the exploration and preparation._")
     
-    df = show_csv()
-    df = data_cleaning(df)
-    exploring_stats(df)
+    show_csv(df)
+    df = clean_csv(df)
+    explore_stats(df, columns)
     
+elif options == "Data Visualization":
+    st.subheader("Data Visualization")
+    st.write("_Insert short description of the visualization techniques here._")
+    
+    df = clean_csv(df)
+    heatmap(df, columns)
     
     
     
