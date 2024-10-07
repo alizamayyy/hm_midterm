@@ -178,7 +178,6 @@ def world_map(df):
     st.write("\n")
 
 def grouped_by_chart(df):
-    st.write("Grouped Bar Chart of Average Alcohol Consumption by Region")
     region_alcohol_consumption = df.groupby('Region')[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean().reset_index()
     region_alcohol_consumption_melted = region_alcohol_consumption.melt(id_vars='Region', var_name='Alcohol_Type', value_name='PerCapita')
     
