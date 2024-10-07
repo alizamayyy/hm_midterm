@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -17,34 +18,30 @@ def show_csv(df):
     return df
     
 def clean_csv(df):
+    df.dropna(inplace=True) 
+    df.drop_duplicates(inplace=True) 
+    return df
+    
+def show_clean(df):
     st.subheader("Cleaning the Dataset")
-    
+    df = clean_csv(df)
     col1, col2 = st.columns(2)
-    
     with col1:
         st.write("__Handling Missing Values__")
-        df.dropna(inplace=True) 
-        
         code = '''
         df.dropna(inplace=True)'''
         st.code(code, language="python")
  
-        st.write("_Insert the analysis after the process._")
-        
+        st.write("_Insert the analysis after the process._")     
     with col2:
         st.write("__Handling Duplicate Data__")
-        df.drop_duplicates(inplace=True) 
-    
         code = '''
         df.drop_duplicates(inplace=True) '''
         st.code(code, language="python")
         
         st.write("_Insert the analysis after the process._")
         
-    # with st.expander("Show Cleaned Dataset", expanded=True):
-    #         st.dataframe(df, use_container_width=True)
     st.write("\n")
-    return df
     
 def explore_stats(df, columns):
     st.subheader("Exploring Statistics")
@@ -89,16 +86,31 @@ def explore_stats(df, columns):
     st.write("\n")
     
 def heatmap(df, columns):
-    
-    st.subheader("Correlation Heatmap")
+    st.write("__Correlation Heatmap__")
+
+    modified_columns = [col.replace('_PerCapita', '') for col in columns]
     
     selected_col = df[columns]
     correlation_matrix = selected_col.corr()
-        
-    plt.figure(figsize=(10, 6))
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
-    plt.title('Correlation Heatmap of Happiness and Alcohol Consumption')
-    st.pyplot(plt)
+    
+    correlation_matrix_df = pd.DataFrame(correlation_matrix.values, 
+                                         index=modified_columns, 
+                                         columns=modified_columns)
+    
+    fig = px.imshow(correlation_matrix_df,
+                    labels=dict(x="", y="", color="Correlation"),
+                    x=correlation_matrix_df.columns,
+                    y=correlation_matrix_df.index,
+                    color_continuous_scale='RdBu',
+                    text_auto=True,
+                   )
+    
+    fig.update_layout(width=700, height=600)
+    
+    fig.update_xaxes(side="top")
+    fig.update_traces(texttemplate="%{z:.2f}", textfont_size=12) 
+    fig.update_coloraxes(showscale=False)    
+    st.plotly_chart(fig, use_container_width=True)
 
     st.write("The heatmap indicates that improving HDI and GDP may play significant roles in enhancing happiness, while alcohol consumption, particularly beer, contributes positively but is less central to the overall happiness score.")
 
@@ -115,19 +127,22 @@ if options == "Introduction":
     st.write("_Insert description of the project here._")
 
 elif options == "Data Exploration and Preparation":
-    st.subheader("Dataset Overview")
-    st.write("_Insert short description of the exploration and preparation._")
     
+    st.subheader("Dataset Overview")
+    st.write("_Insert short description of the exploration and preparation._") 
     show_csv(df)
-    df = clean_csv(df)
+    show_clean(df)
     explore_stats(df, columns)
     
 elif options == "Data Visualization":
     st.subheader("Data Visualization")
     st.write("_Insert short description of the visualization techniques here._")
     
+    st.write("\n")
     df = clean_csv(df)
-    heatmap(df, columns)
+    col1, col2 = st.columns(2)
+    with col1:
+        heatmap(df, columns)
     
     
     
