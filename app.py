@@ -112,7 +112,7 @@ def heatmap(df, columns):
     fig.update_coloraxes(showscale=False)    
     st.plotly_chart(fig, use_container_width=True)
 
-    st.write("The heatmap indicates that improving HDI and GDP may play significant roles in enhancing happiness, while alcohol consumption, particularly beer, contributes positively but is less central to the overall happiness score.")
+    st.write("_Insert heatmap description here_")
 
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
