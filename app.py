@@ -27,26 +27,33 @@ def clean_csv(df):
 def show_clean(df):
     st.subheader("Cleaning the Dataset")
     df = clean_csv(df)
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, gap='medium')
     with col1:
         st.write("__Handling Missing Values__")
         code = '''
         df.dropna(inplace=True)'''
         st.code(code, language="python")
  
-        st.write("_Insert the analysis after the process._")     
+        st.write(
+        "The `df.dropna()` method eliminates any rows with missing values in the DataFrame, ensuring the data remains reliable. "
+        "This step is crucial for conducting accurate analyses, and the use of `inplace=True` ensures that the original DataFrame is updated."
+        )
     with col2:
         st.write("__Handling Duplicate Data__")
         code = '''
         df.drop_duplicates(inplace=True) '''
         st.code(code, language="python")
         
-        st.write("_Insert the analysis after the process._")
+        st.write(
+        "The `df.drop_duplicates()` function removes any duplicate rows from the DataFrame, ensuring that each record is unique. "
+        "This process is essential for maintaining data integrity and avoiding skewed analysis results, and using `inplace=True` updates the DataFrame directly."
+    )
         
     st.write("\n")
     
 def explore_stats(df, columns):
     st.subheader("Exploring Statistics")
+    st.write("After completing the data cleaning process, the table displays a detailed summary of essential statistics for each variable in the dataset. This overview includes crucial measures of central tendency, such as the mean and median, alongside indicators of variability like standard deviation and range. Analyzing these statistics provides important insights into the distribution and nature of the data, which will be vital for informing the next steps in our analysis.")
     
     stats_list = []
     
@@ -84,7 +91,6 @@ def explore_stats(df, columns):
     stats_df = pd.DataFrame(stats_list)
     st.dataframe(stats_df, use_container_width=True) 
     
-    st.write("_Insert the analysis after the process._")
     st.write("\n")
     
 def heatmap(df, columns):
@@ -120,7 +126,7 @@ def heatmap(df, columns):
     ))   
     st.plotly_chart(fig, use_container_width=True)
 
-    st.write("_Insert heatmap description here_")
+    st.write("_Insert short heatmap description here. Mention that this is the heatmap between all numerical colunmns of the dataset. Specifically mention what relationship (x,y) has a value closest to one (direct relationstip) and what relationship has a value closest to -1 (inverse relationship). Mention two of each._")
     st.write("\n")
 
 def box_plot(df, columns):  
@@ -147,6 +153,7 @@ def box_plot(df, columns):
     st.plotly_chart(fig)
 
     st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
+    st.write("_Mention how the happiness score in the box plot is relatively very small among others (Something about the value is only to 10, see CSV). Mention how the GDP per capita has many outliers and why do you think so many outliers are present._")
     st.write("\n")
 
 def world_map(df):
@@ -178,6 +185,7 @@ def world_map(df):
     st.plotly_chart(fig)
         
     st.write("This map visualizes the average alcohol consumption per capita by country, where each country is colored according to the level of alcohol consumption.")
+    st.write("_Mention how the area around the blue side in the center is on the lower part of the scare (Mention the countries) and how the Russian Federation is seemingly bright yellow, indicating the country being on the higher point of the scale. Enumerate the possibilities as to why they are at the bottom or why the russians seem to consume more alcohol that anywhere. Special mention the philippines and explain the possibiliteis why._")
     st.write("\n")
 
 def grouped_by_chart(df):
@@ -213,6 +221,7 @@ def grouped_by_chart(df):
     
     st.plotly_chart(fig, use_container_width=True)    
     st.write("Consumption patterns highlight distinct regional preferences, with Western Europe favoring wine, while North America and Central & Eastern Europe prefer beer and spirits, respectively.")
+    st.write("_Add the highest and lowest consumption of beer, spirit, and wine. Why do you think that region is the highest of beer, spirit, and wine?_")
     
 def ave_alcohol_consumption(df):
     mean_values = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean().reset_index()
@@ -250,12 +259,11 @@ def ave_alcohol_consumption(df):
     st.plotly_chart(fig, use_container_width=True)
     
     st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")   
-    st.write("\n") 
+    st.write("_Highlight that among the three, it is the beer that is the highest and wine as the lowest. Why do you think beer is the highest and wine is the lowest?_")
 
 def horizontal_bar_chart(df):    
     avg_happiness_by_region = df.groupby('Region')['HappinessScore'].mean().reset_index()
     
-    # Sort the DataFrame by HappinessScore in descending order and get the top 10
     top_happiness_regions = avg_happiness_by_region.sort_values(by='HappinessScore', ascending=False).head(10)
     
     fig = px.bar(top_happiness_regions, 
@@ -275,13 +283,13 @@ def horizontal_bar_chart(df):
         coloraxis_colorbar=dict(
             title="",
             thicknessmode="pixels",
-            thickness=15,  # Width of the color bar
+            thickness=15,  
             lenmode="pixels",
-            len=330,  # Set height of the color bar (adjust as needed)
+            len=330,  
             yanchor="top",
-            y=1,  # Center the color bar vertically
+            y=1, 
             xanchor="left",
-            x=1  # Position the color bar to the right of the chart
+            x=1  
         )
     )
     
@@ -293,6 +301,7 @@ def horizontal_bar_chart(df):
     st.plotly_chart(fig, use_container_width=True)
     
     st.write("The chart highlights the top 10 regions with the highest average happiness scores.")
+    st.write("_Mention that out of the scale, what is the region with highest happines score? Why do you think people are happy in that region?_")
     st.write("\n")
 
 def custom_pairplots(df, columns):
@@ -356,6 +365,8 @@ def dynamic_regression_plot(df, columns):
     )
 
     st.plotly_chart(fig)
+    
+    st.write("_Compare in the heatmap (closest to 1 and -1 in the heatmap). Say how the closest to 1 has clearly a positive or direct relationship as shown with the trendline and how the closest to -1 has a clear negative or inverse relationship. Mention that the relationship between variables with closest to 0 value in the heatmap has a no definite relationship._")
     st.write("\n")
 
 def dynamic_histogram(df, columns):
@@ -406,6 +417,7 @@ def dynamic_histogram(df, columns):
     )
     
     st.plotly_chart(fig)
+    st.write("_Interpret this to maybe 2-3 lines, idk how to interpret this._")
     st.write("\n")
     
 def scatter_HDI_HS(df):
@@ -427,6 +439,28 @@ def scatter_HDI_HS(df):
     st.plotly_chart(fig)
     st.write("\n")
 
+def scatter_ALConsumption_GDP(df):
+    df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
+    
+    fig = px.scatter(
+    df,
+    x='Average_Alcohol_Consumption',  
+    y='GDP_PerCapita',  
+    color='Region', 
+    title='GDP vs. Average Alcohol Consumption by Region',
+    labels={'Average_Alcohol_Consumption': 'Average Alcohol Consumption', 'GDP': 'Gross Domestic Product'},
+    trendline='ols',
+    )
+    
+    fig.update_layout(
+        height=600,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig)
+    
+    st.write("_Explain what the chart is about. Explain the relationship between alcohol consumption and GDP is. highlight the subsharan africa. # Does a higher GDP correlate with higher alcohol consumption? How does income inequality within a country affect alcohol consumption levels? Is there a difference in consumption between different socioeconomic groups? (Try to see the countries of the region as to what -world they are in (first world, third world))_")
+
 def scatter_ALConsumption_HDI(df):
     df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
     
@@ -446,7 +480,8 @@ def scatter_ALConsumption_HDI(df):
     )
     
     st.plotly_chart(fig)
-    st.write("\n")
+    
+    st.write("_Explain what the chart is about. Explain the relationship between alcohol consumption and HDI is. highlight the subsharan africa. What is the correlation between HDI and alcohol consumption per capita in different countries? Do social factors affect alcohol consumption? How does the level of education, as part of HDI, influence alcohol consumption patterns? How do income levels, as part of the HDI calculation, affect alcohol consumption?_")
     
 def scatter_ALConsumption_HS(df):
     df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
@@ -467,6 +502,7 @@ def scatter_ALConsumption_HS(df):
     )
     
     st.plotly_chart(fig)
+    st.write("_Explain what the chart is. What are these variables. highlight the middle east and northern africa as to why they  are the only region who has a clear positive relationship. Does a higher happiness score correlate with increased or decreased alcohol consumption? Are individuals who consume alcohol in moderation happier than those who abstain or overconsume? Do alcohol consumption really affect the happiness of a person?_")
     st.write("\n")
 
 # Sidebar
@@ -479,13 +515,16 @@ st.header("Happiness and Alcohol Consumption Analysis")
 st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True) 
 
 if options == "Introduction":
-    st.write("_Insert description of the project here._")
+    st.write("_Insert introduction/abstract-ish._")
 
 elif options == "Data Exploration and Preparation":
-    
     st.subheader("Dataset Overview")
-    st.write("_Insert short description of the exploration and preparation._") 
+    
+    st.write("_What is the dataset_")
     show_csv(df)
+    st.write("_Dataset source and purpose, Number of rows and columns, Column names and data types and definition of EACH, Initial observations and insights_")
+    st.write("\n")
+    
     show_clean(df)
     explore_stats(df, columns)
     
@@ -530,7 +569,17 @@ elif options == "Data Visualization":
     with tab5:
         st.subheader("Alcohol Consumption Relationships")
         # scatter_HDI_HS(df)
+        scatter_ALConsumption_GDP(df)
         scatter_ALConsumption_HDI(df)
         scatter_ALConsumption_HS(df)
         
+elif options == "Conclusion":
+    st.write("### Conclusion")
+    st.write("This analysis provides insights into the relationship between happiness and alcohol consumption.")
     
+    st.write("**Key findings include:**")
+    st.write("- **Correlations:** A moderate positive correlation exists between happiness scores and GDP per capita and HDI, emphasizing the importance of economic factors in influencing happiness. Moderate correlations between happiness and beer, spirits, and wine suggest a nuanced relationship between alcohol consumption and happiness.")
+    st.write("- **Regional Patterns:** The box plot and bar chart showcase the variability in metrics and highlight significant differences in alcohol consumption across regions, suggesting that cultural and economic factors heavily influence drinking habits.")
+    st.write("- **Cultural Influence:** The cultural context appears to shape not just consumption patterns but also overall happiness levels, reflecting the complex interplay between economic indicators, societal norms, and personal well-being.")
+    
+    st.write("Overall, the insights gleaned from this dataset could serve as a basis for further studies and policy discussions aimed at improving happiness and well-being through both economic development and cultural understanding.")
