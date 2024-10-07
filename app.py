@@ -146,6 +146,7 @@ def box_plot(df, columns):
     st.plotly_chart(fig)
 
     st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
+    st.write("\n")
 
 def world_map(df):
     df['Avg_Alcohol_PerCapita'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
@@ -234,7 +235,7 @@ def ave_alcohol_consumption(df):
                       legend=dict(
                           orientation="h", 
                           yanchor="bottom",
-                          y=-0.3, 
+                          y=-0.25, 
                           xanchor="center",
                           x=0.5  
                       )
@@ -384,7 +385,7 @@ def dynamic_histogram(df, columns):
     fig.update_layout(
         title=f'Histogram of {selected_column}',
         xaxis_title=selected_column,
-        yaxis_title='Count',
+        yaxis_title='',
         showlegend=False,
         legend=dict(
             orientation="h",  
@@ -406,6 +407,67 @@ def dynamic_histogram(df, columns):
     st.plotly_chart(fig)
     st.write("\n")
     
+def scatter_HDI_HS(df):
+    fig = px.scatter(
+    df,
+    x='HDI',  
+    y='HappinessScore',  
+    color='Region', 
+    title='Happiness Score vs. HDI by Region',
+    labels={'HDI': 'Human Development Index', 'Happiness Score': 'Happiness Score'},
+    trendline='ols',
+    )
+    
+    fig.update_layout(
+        height=600,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig)
+    st.write("\n")
+
+def scatter_ALConsumption_HDI(df):
+    df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
+    
+    fig = px.scatter(
+    df,
+    x='Average_Alcohol_Consumption',  
+    y='HDI',  
+    color='Region', 
+    title='HDI vs. Average Alcohol Consumption by Region',
+    labels={'Average_Alcohol_Consumption': 'Average Alcohol Consumption', 'HDI': 'Human Development Index'},
+    trendline='ols',
+    )
+    
+    fig.update_layout(
+        height=600,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig)
+    st.write("\n")
+    
+def scatter_ALConsumption_HS(df):
+    df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
+    
+    fig = px.scatter(
+    df,
+    x='Average_Alcohol_Consumption',  
+    y='HappinessScore',  
+    color='Region', 
+    title='Happiness Score vs. Average Alcohol Consumption by Region',
+    labels={'Average_Alcohol_Consumption': 'Average Alcohol Consumption', 'HDI': 'Human Development Index'},
+    trendline='ols',
+    )
+    
+    fig.update_layout(
+        height=600,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig)
+    st.write("\n")
+
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
                                 ["Introduction", "Data Exploration and Preparation", 
@@ -440,8 +502,10 @@ elif options == "Data Visualization":
     grouped_by_chart(df)
     ave_alcohol_consumption(df)
     horizontal_bar_chart(df)
-    # custom_pairplots(df, columns)
     dynamic_regression_plot(df, columns)
+    scatter_HDI_HS(df)
+    scatter_ALConsumption_HDI(df)
+    scatter_ALConsumption_HS(df)
     
     
         
