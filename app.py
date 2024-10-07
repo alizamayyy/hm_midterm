@@ -107,10 +107,16 @@ def heatmap(df, columns):
                    )
     
     fig.update_layout(width=700, height=600)
-    
     fig.update_xaxes(side="top")
     fig.update_traces(texttemplate="%{z:.2f}", textfont_size=12) 
-    fig.update_coloraxes(showscale=False)    
+    fig.update_coloraxes(colorbar=dict(
+        orientation="h",  
+        yanchor="bottom",
+        y=-0.2,  
+        xanchor="center",
+        x=0.5,  
+        title=dict(text='', side='top') 
+    ))   
     st.plotly_chart(fig, use_container_width=True)
 
     st.write("_Insert heatmap description here_")
@@ -130,7 +136,7 @@ def box_plot(df, columns):
                     legend=dict(
                         orientation="h",  
                         yanchor="bottom",
-                        y=-0.5, 
+                        y=-0.3, 
                         xanchor="center", 
                         x=0.5         
                     )
@@ -139,6 +145,36 @@ def box_plot(df, columns):
     st.plotly_chart(fig)
 
     st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
+
+def world_map(df):
+    df['Avg_Alcohol_PerCapita'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
+    
+    fig = px.choropleth(df, 
+                        locations='Country', 
+                        locationmode='country names', 
+                        color='Avg_Alcohol_PerCapita',
+                        hover_name='Country', 
+                        color_continuous_scale=px.colors.sequential.Plasma,
+                        labels={'Avg_Alcohol_PerCapita': 'Average Alcohol Consumption (L)'},
+                        title='Average Alcohol Consumption Per Capita by Country')
+    
+    fig.update_coloraxes(colorbar=dict(
+        orientation="h",  
+        yanchor="bottom",
+        y=-0.2,  
+        xanchor="center",
+        x=0.5,  
+        title=dict(text='Average Alcohol Consumption', side='top') 
+    ))
+        
+    fig.update_layout(
+        height=600,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig)
+        
+    st.write("This map visualizes the average alcohol consumption per capita by country, where each country is colored according to the level of alcohol consumption.")
 
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
@@ -169,6 +205,7 @@ elif options == "Data Visualization":
 
     heatmap(df, columns)
     box_plot(df, columns)
+    world_map(df)
     
     
         
