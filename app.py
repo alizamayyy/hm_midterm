@@ -192,12 +192,12 @@ def grouped_by_chart(df):
     
     fig.update_layout(xaxis_title='Region',
                       yaxis_title='Average Per Capita Consumption',
-                      xaxis_tickangle=-45,
+                      xaxis_tickangle=-10,
                       legend_title_text='',
                       legend=dict(
                           orientation="h",  # Horizontal orientation
                           yanchor="bottom",
-                          y=-0.5,  # Adjust this value to move the legend further down
+                          y=-0.25,  # Adjust this value to move the legend further down
                           xanchor="center",
                           x=0.5  # Center the legend
                       )
@@ -211,6 +211,44 @@ def grouped_by_chart(df):
     st.plotly_chart(fig, use_container_width=True)    
     st.write("Consumption patterns highlight distinct regional preferences, with Western Europe favoring wine, while North America and Central & Eastern Europe prefer beer and spirits, respectively.")
     
+def ave_alcohol_consumption(df):
+    mean_values = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean().reset_index()
+    mean_values.columns = ['Alcohol Type', 'Average Consumption']
+    
+    # Remove '_PerCapita' from the 'Alcohol Type' labels
+    mean_values['Alcohol Type'] = mean_values['Alcohol Type'].str.replace('_PerCapita', '', regex=False)
+    
+    fig = px.bar(mean_values, 
+                  x='Alcohol Type', 
+                  y='Average Consumption', 
+                  title='Average Alcohol Consumption by Type',
+                  labels={'Average Consumption': 'Average Consumption'},
+                  color='Alcohol Type',
+                  height=400)
+    
+    fig.update_layout(xaxis_title='Type of Alcohol',
+                      yaxis_title='Average Consumption',
+                      xaxis_tickangle=0,
+                      legend_title_text='',
+                      legend=dict(
+                          orientation="h", 
+                          yanchor="bottom",
+                          y=-0.3, 
+                          xanchor="center",
+                          x=0.5  
+                      )
+                 )
+    
+    fig.update_layout(
+        height=600,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")    
+
+
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
                                 ["Introduction", "Data Exploration and Preparation", 
@@ -242,6 +280,7 @@ elif options == "Data Visualization":
     box_plot(df, columns)
     world_map(df)
     grouped_by_chart(df)
+    ave_alcohol_consumption(df)
     
     
         
