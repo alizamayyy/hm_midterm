@@ -557,7 +557,6 @@ elif options == "Data Visualization":
         box_plot(df, columns)
         dynamic_histogram(df, columns)
         
-    
     with tab3:
         st.subheader("Geographical Insights")
         world_map(df)
