@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -114,6 +115,31 @@ def heatmap(df, columns):
 
     st.write("_Insert heatmap description here_")
 
+def box_plot(df, columns):  
+    df_melted = df[columns].melt(var_name='Metric', value_name='Value')
+
+    fig = px.box(df_melted, x="Value", y="Metric", color="Metric",
+                title="Box Plot of Various Metrics",
+                hover_data=["Metric"]  
+                )
+    
+    fig.update_layout(yaxis_title='',
+                    xaxis_title='',
+                    title='Box Plot of Various Metrics',
+                    legend_title_text='',
+                    legend=dict(
+                        orientation="h",  
+                        yanchor="bottom",
+                        y=-0.5, 
+                        xanchor="center", 
+                        x=0.5         
+                    )
+                )
+    
+    st.plotly_chart(fig)
+
+    st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
+
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
                                 ["Introduction", "Data Exploration and Preparation", 
@@ -140,10 +166,9 @@ elif options == "Data Visualization":
     
     st.write("\n")
     df = clean_csv(df)
-    col1, col2 = st.columns(2)
-    with col1:
-        heatmap(df, columns)
-    
+
+    heatmap(df, columns)
+    box_plot(df, columns)
     
     
         
