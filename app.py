@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
 
 st.set_page_config(page_title="Kanpai!!", page_icon=":beer:", layout="wide", initial_sidebar_state="auto")
 
@@ -289,6 +290,70 @@ def horizontal_bar_chart(df):
     st.plotly_chart(fig, use_container_width=True)
     
     st.write("The chart highlights the top 10 regions with the highest average happiness scores.")
+    st.write("\n")
+
+def custom_pairplots(df, columns):
+    st.subheader("Pair Plot of Various Metrics with Trendlines")
+    g = sns.pairplot(df[columns], kind='reg', plot_kws={
+        'scatter_kws': {'s': 50, 'alpha': 0.5},
+        'line_kws': {'color': 'red', 'linewidth': 1}
+    })
+    plt.suptitle('Pair Plot of Various Metrics with Trendlines', y=1.02)
+    st.pyplot(plt)
+        
+    st.write("The graph indicates that improving HDI and economic conditions can significantly enhance happiness levels.")
+
+def dynamic_regression_plot(df, columns):
+    st.write("__Dynamic Regression Plot__")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        x_column = st.selectbox('Select X-axis value', columns, index=0)
+    with col2:
+        y_column = st.selectbox('Select Y-axis value', columns, index=1)
+
+    X = df[[x_column]].values 
+    y = df[y_column].values
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    x_range = np.linspace(X.min(), X.max(), 100)
+    y_range = model.predict(x_range.reshape(-1,1))
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=X.squeeze(), 
+        y=y, 
+        mode='markers', 
+        name=f'Data Points', 
+        marker=dict(color='blue')  # Color for data points
+    ))
+    fig.add_trace(go.Scatter(
+        x=x_range.squeeze(), 
+        y=y_range, 
+        mode='lines', 
+        name='Regression Line', 
+        line=dict(color='red')  # Color for regression line
+    ))
+    fig.update_layout(
+        title=f'Regression Plot of {y_column} vs {x_column}',
+        xaxis_title=x_column,
+        yaxis_title=y_column,
+        showlegend=True,
+        legend=dict(
+            orientation="h",  
+            yanchor="bottom",  
+            y=-0.25,  
+            xanchor="center",  
+            x=0.5 
+        ),
+        height=600,  
+        width=None,  
+    )
+
+    st.plotly_chart(fig)
+
 
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
@@ -323,6 +388,8 @@ elif options == "Data Visualization":
     grouped_by_chart(df)
     ave_alcohol_consumption(df)
     horizontal_bar_chart(df)
+    # custom_pairplots(df, columns)
+    dynamic_regression_plot(df, columns)
     
     
         
