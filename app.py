@@ -247,7 +247,8 @@ def ave_alcohol_consumption(df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")    
+    st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")   
+    st.write("\n") 
 
 def horizontal_bar_chart(df):    
     avg_happiness_by_region = df.groupby('Region')['HappinessScore'].mean().reset_index()
@@ -340,7 +341,7 @@ def dynamic_regression_plot(df, columns):
         title=f'Regression Plot of {y_column} vs {x_column}',
         xaxis_title=x_column,
         yaxis_title=y_column,
-        showlegend=True,
+        showlegend=False,
         legend=dict(
             orientation="h",  
             yanchor="bottom",  
@@ -353,8 +354,58 @@ def dynamic_regression_plot(df, columns):
     )
 
     st.plotly_chart(fig)
+    st.write("\n")
 
+def dynamic_histogram(df, columns):
+    st.write("__Dynamic Histogram Plot__")
 
+    selected_column = st.selectbox('Select Column for Histogram', columns, index=0)
+
+    fig = go.Figure()
+    
+    hist_data = np.histogram(df[selected_column], bins=20)  # Using 20 bins to match your Seaborn example
+    bin_edges = hist_data[1]
+    bin_counts = hist_data[0]
+
+    fig.add_trace(go.Histogram(
+        x=df[selected_column],
+        name='Histogram',
+        marker=dict(color='blue'),  # Color for histogram bars
+        opacity=0.7,
+        xbins=dict(
+            start=bin_edges[0],  
+            end=bin_edges[-1],  
+            size=(bin_edges[1] - bin_edges[0]) 
+        )
+    ))
+
+    max_y_value = np.max(bin_counts)
+
+    fig.update_layout(
+        title=f'Histogram of {selected_column}',
+        xaxis_title=selected_column,
+        yaxis_title='Count',
+        showlegend=False,
+        legend=dict(
+            orientation="h",  
+            yanchor="bottom",  
+            y=-0.25,  
+            xanchor="center",  
+            x=0.5 
+        ),
+        height=600,
+        width=None,
+        xaxis=dict(showgrid=True, zeroline=False),  
+        yaxis=dict(
+            showgrid=True, 
+            zeroline=False,
+            range=[0, max_y_value * 1.1]  
+        )
+    )
+    
+    st.plotly_chart(fig)
+    st.write("\n")
+    
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
                                 ["Introduction", "Data Exploration and Preparation", 
@@ -384,6 +435,7 @@ elif options == "Data Visualization":
 
     heatmap(df, columns)
     box_plot(df, columns)
+    dynamic_histogram(df, columns)
     world_map(df)
     grouped_by_chart(df)
     ave_alcohol_consumption(df)
