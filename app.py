@@ -121,6 +121,7 @@ def heatmap(df, columns):
     st.plotly_chart(fig, use_container_width=True)
 
     st.write("_Insert heatmap description here_")
+    st.write("\n")
 
 def box_plot(df, columns):  
     df_melted = df[columns].melt(var_name='Metric', value_name='Value')
@@ -188,7 +189,7 @@ def grouped_by_chart(df):
                   y='PerCapita', 
                   color='Alcohol_Type', 
                   barmode='group',
-                  title='Average Alcohol Consumption by Region',
+                  title='Alcohol Consumption by Region',
                   labels={'PerCapita': 'Average Per Capita Consumption', 'Region': 'Region'},
                 )
     
@@ -206,7 +207,7 @@ def grouped_by_chart(df):
                  )
     
     fig.update_layout(
-        height=700,  
+        height=600,  
         width=None,  
     )
     
@@ -475,9 +476,9 @@ options = st.sidebar.selectbox("Select a section:",
 
 # Application
 st.header("Happiness and Alcohol Consumption Analysis") 
+st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True) 
 
 if options == "Introduction":
-    st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True) 
     st.write("_Insert description of the project here._")
 
 elif options == "Data Exploration and Preparation":
@@ -490,23 +491,46 @@ elif options == "Data Exploration and Preparation":
     
 elif options == "Data Visualization":
     st.subheader("Data Visualization")
-    st.write("_Insert short description of the visualization techniques here._")
-    
-    st.write("\n")
     df = clean_csv(df)
 
-    heatmap(df, columns)
-    box_plot(df, columns)
-    dynamic_histogram(df, columns)
-    world_map(df)
-    grouped_by_chart(df)
-    ave_alcohol_consumption(df)
-    horizontal_bar_chart(df)
-    dynamic_regression_plot(df, columns)
-    scatter_HDI_HS(df)
-    scatter_ALConsumption_HDI(df)
-    scatter_ALConsumption_HS(df)
+    tab_labels = [
+    "Data Overview", 
+    "Correlation and Distribution Data", 
+    "Geographical Insights", 
+    "Dynamic Data", 
+    "Alcohol Consumption Relationships"
+    ]
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(tab_labels)
     
+    with tab1:
+        st.subheader("Data Overview")
+        
+        col1, col2 = st.columns(2, gap='large')
+        with col1:
+            grouped_by_chart(df)
+        with col2:
+            ave_alcohol_consumption(df)
+        horizontal_bar_chart(df)
     
+    with tab2:
+        st.subheader("Correlation and Distribution Data")
+        heatmap(df, columns)
+        box_plot(df, columns)
+        dynamic_histogram(df, columns)
+        
+    
+    with tab3:
+        st.subheader("Geographical Insights")
+        world_map(df)
+    
+    with tab4:
+        st.subheader("Dynamic Data")
+        dynamic_regression_plot(df, columns)
+    
+    with tab5:
+        st.subheader("Alcohol Consumption Relationships")
+        # scatter_HDI_HS(df)
+        scatter_ALConsumption_HDI(df)
+        scatter_ALConsumption_HS(df)
         
     
