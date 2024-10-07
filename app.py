@@ -175,7 +175,43 @@ def world_map(df):
     st.plotly_chart(fig)
         
     st.write("This map visualizes the average alcohol consumption per capita by country, where each country is colored according to the level of alcohol consumption.")
+    st.write("\n")
 
+def grouped_by_chart(df):
+    st.write("Grouped Bar Chart of Average Alcohol Consumption by Region")
+    region_alcohol_consumption = df.groupby('Region')[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean().reset_index()
+    region_alcohol_consumption_melted = region_alcohol_consumption.melt(id_vars='Region', var_name='Alcohol_Type', value_name='PerCapita')
+    
+    fig = px.bar(region_alcohol_consumption_melted, 
+                  x='Region', 
+                  y='PerCapita', 
+                  color='Alcohol_Type', 
+                  barmode='group',
+                  title='Average Alcohol Consumption by Region',
+                  labels={'PerCapita': 'Average Per Capita Consumption', 'Region': 'Region'},
+                )
+    
+    fig.update_layout(xaxis_title='Region',
+                      yaxis_title='Average Per Capita Consumption',
+                      xaxis_tickangle=-45,
+                      legend_title_text='',
+                      legend=dict(
+                          orientation="h",  # Horizontal orientation
+                          yanchor="bottom",
+                          y=-0.5,  # Adjust this value to move the legend further down
+                          xanchor="center",
+                          x=0.5  # Center the legend
+                      )
+                 )
+    
+    fig.update_layout(
+        height=700,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)    
+    st.write("Consumption patterns highlight distinct regional preferences, with Western Europe favoring wine, while North America and Central & Eastern Europe prefer beer and spirits, respectively.")
+    
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
                                 ["Introduction", "Data Exploration and Preparation", 
@@ -206,6 +242,7 @@ elif options == "Data Visualization":
     heatmap(df, columns)
     box_plot(df, columns)
     world_map(df)
+    grouped_by_chart(df)
     
     
         
