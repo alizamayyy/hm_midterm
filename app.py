@@ -224,7 +224,7 @@ def ave_alcohol_consumption(df):
                   title='Average Alcohol Consumption by Type',
                   labels={'Average Consumption': 'Average Consumption'},
                   color='Alcohol Type',
-                  height=400)
+                )
     
     fig.update_layout(xaxis_title='Type of Alcohol',
                       yaxis_title='Average Consumption',
@@ -248,6 +248,47 @@ def ave_alcohol_consumption(df):
     
     st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")    
 
+def horizontal_bar_chart(df):    
+    avg_happiness_by_region = df.groupby('Region')['HappinessScore'].mean().reset_index()
+    
+    # Sort the DataFrame by HappinessScore in descending order and get the top 10
+    top_happiness_regions = avg_happiness_by_region.sort_values(by='HappinessScore', ascending=False).head(10)
+    
+    fig = px.bar(top_happiness_regions, 
+                  x='HappinessScore', 
+                  y='Region', 
+                  orientation='h', 
+                  title='Top 10 Regions by Happiness Score',
+                  color='HappinessScore',  
+                  color_continuous_scale=px.colors.sequential.YlOrRd,
+                )
+    
+    fig.update_layout(
+        xaxis_title='Average Happiness Score',
+        yaxis_title='Region',
+        legend_title_text='',
+        xaxis_tickangle=0,
+        coloraxis_colorbar=dict(
+            title="",
+            thicknessmode="pixels",
+            thickness=15,  # Width of the color bar
+            lenmode="pixels",
+            len=330,  # Set height of the color bar (adjust as needed)
+            yanchor="top",
+            y=1,  # Center the color bar vertically
+            xanchor="left",
+            x=1  # Position the color bar to the right of the chart
+        )
+    )
+    
+    fig.update_layout(
+        height=500,  
+        width=None,  
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.write("The chart highlights the top 10 regions with the highest average happiness scores.")
 
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
@@ -281,6 +322,7 @@ elif options == "Data Visualization":
     world_map(df)
     grouped_by_chart(df)
     ave_alcohol_consumption(df)
+    horizontal_bar_chart(df)
     
     
         
