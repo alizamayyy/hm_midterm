@@ -514,12 +514,20 @@ options = st.sidebar.selectbox("Select a section:",
 st.header("Happiness and Alcohol Consumption Analysis") 
 st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True) 
 
-
 if options == "Introduction":
+   
     st.write("Happiness and well-being are increasingly central themes in global discussions about public health, societal development, and policy making. One aspect of human behavior that has been closely studied in relation to mental health and happiness is alcohol consumption.")
     st.write("Does higher alcohol consumption lead to lower happiness levels? Or are happier countries more likely to have higher alcohol consumption due to social factors?")
     st.write("The aim of this analysis is to explore how alcohol consumption correlates with happiness levels.")
     st.write("The dataset is taken from [Kaggle](https://www.kaggle.com/datasets/marcospessotto/happiness-and-alcohol-consumption).")
+    col1, col2, col3= st.columns(3)
+    with col1:
+        st.image("giphy.gif", )
+    with col2:
+        st.image("beer-happy.gif", )
+    with col3:
+        st.image("cheers.gif", )
+       
 
 elif options == "Data Exploration and Preparation":
     st.subheader("Dataset Overview")
