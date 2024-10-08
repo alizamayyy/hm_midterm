@@ -19,7 +19,24 @@ def show_csv(df):
     st.dataframe(df, use_container_width=True)
     st.write("\n")
     return df
-    
+ 
+def show_col_names():
+    columns_info = {
+    "Country": "Contains the name of each country in the dataset.",
+    "Region": "Indicates the geographical region to which each country belongs.",
+    "Hemisphere": "Specifies the hemisphere (north or south) in which each country is located.",
+    "HappinessScore": "Represents the happiness level of the population, rated on a scale from 0 to 10.",
+    "HDI": "Provides the Human Development Index, a measure of socio-economic development.",
+    "GDP_PerCapita": "Reflects the Gross Domestic Product per capita, indicating the average economic output per person.",
+    "Beer_PerCapita": "Shows the average liters of beer consumed per person annually.",
+    "Spirit_PerCapita": "Represents the average liters of spirits consumed per person annually.",
+    "Wine_PerCapita": "Indicates the average liters of wine consumed per person annually."
+    }
+
+    with st.expander("_Show Column Descriptions_", expanded=False):
+        for column, description in columns_info.items():
+            st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ∘ &nbsp;&nbsp;**{column}**: {description}")
+            
 def clean_csv(df):
     df.dropna(inplace=True) 
     df.drop_duplicates(inplace=True) 
@@ -28,7 +45,7 @@ def clean_csv(df):
 def show_clean(df):
     st.subheader("Cleaning the Dataset")
     df = clean_csv(df)
-    col1, col2, col3 = st.columns(3, gap='medium')
+    col1, col2 = st.columns(2, gap='medium')
     with col1:
         st.write("__Handling Missing Values__")
         code = '''
@@ -41,17 +58,6 @@ def show_clean(df):
         )
         
     with col2:
-        st.write("__Dropping Unused Columns__")
-        code = '''
-        df.drop(columns=['Hemisphere'], inplace=True)'''
-        st.code(code, language="python")
-
-        st.write(
-            "The `df.drop(columns=['Hemisphere'], inplace=True)` method removes the 'Hemisphere' column from the DataFrame. "
-            "Since this column is not used in the analysis, dropping it helps streamline the DataFrame, making it easier to work with and improving performance."
-        )
-        
-    with col3:
         st.write("__Handling Duplicate Data__")
         code = '''
         df.drop_duplicates(inplace=True) '''
@@ -547,7 +553,7 @@ if options == "Introduction":
     st.write("")
     st.write("### The Team ✨")
     
-            # Function to encode the image
+    # Function to encode the image
     def img_to_base64(img_path):
         with open(img_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode('utf-8')
@@ -624,21 +630,7 @@ elif options == "Data Exploration and Preparation":
     st.write("The **Happiness and Alcohol Consumption** dataset investigates the relationship between alcohol consumption and social indicators such as happiness, Human Development Index (HDI), and Gross Domestic Product (GDP) per capita by country. Sourced from 2016, it consists of 122 rows and 9 columns, offering insights into how happiness, economic prosperity, and personal development correlate with alcohol consumption patterns across various types, including beer, spirits, and wine.")
     show_csv(df)
     
-    columns_info = {
-    "Country": "Contains the name of each country in the dataset.",
-    "Region": "Indicates the geographical region to which each country belongs.",
-    "Hemisphere": "Specifies the hemisphere (north or south) in which each country is located.",
-    "HappinessScore": "Represents the happiness level of the population, rated on a scale from 0 to 10.",
-    "HDI": "Provides the Human Development Index, a measure of socio-economic development.",
-    "GDP_PerCapita": "Reflects the Gross Domestic Product per capita, indicating the average economic output per person.",
-    "Beer_PerCapita": "Shows the average liters of beer consumed per person annually.",
-    "Spirit_PerCapita": "Represents the average liters of spirits consumed per person annually.",
-    "Wine_PerCapita": "Indicates the average liters of wine consumed per person annually."
-    }
-
-    with st.expander("_Show Column Descriptions_", expanded=True):
-        for column, description in columns_info.items():
-            st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ∘ &nbsp;&nbsp;**{column}**: {description}")
+    show_col_names()
     
     st.write("\n")
     st.write("\n")
