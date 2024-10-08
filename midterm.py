@@ -45,7 +45,7 @@ def clean_csv(df):
 def show_clean(df):
     st.subheader("Cleaning the Dataset")
     df = clean_csv(df)
-    col1, col2 = st.columns(2, gap='medium')
+    col1, col2 = st.columns(2, gap='large')
     with col1:
         st.write("__Handling Missing Values__")
         code = '''
