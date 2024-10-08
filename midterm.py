@@ -126,8 +126,10 @@ def heatmap(df, columns):
     ))   
     st.plotly_chart(fig, use_container_width=True)
 
-    st.write("_Insert short heatmap description here. Mention that this is the heatmap between all numerical colunmns of the dataset. Specifically mention what relationship (x,y) has a value closest to one (direct relationstip) and what relationship has a value closest to -1 (inverse relationship). Mention two of each._")
-    st.write("\n")
+    st.write("- **Happiness Score and GDP Per Capita**: The correlation is positive but weaker than with HDI, suggesting that while wealth contributes to happiness, the quality of life, as reflected in HDI, is also important.")
+    st.write("- **Happiness Score and Alcohol Consumption**: Moderate positive correlations are observed between happiness and all types of alcohol consumption, with beer showing the strongest correlation, possibly linked to social interactions.")
+    st.write("- **Interrelations among Alcohol Types**: Moderate correlations among beer, spirits, and wine indicate that high consumption of one type often correlates with high consumption of others, suggesting shared cultural factors.")
+    st.write("Overall, the heatmap indicates that improving HDI and GDP may play significant roles in enhancing happiness, while alcohol consumption, particularly beer, contributes positively but is less central to the overall happiness score.")
 
 def box_plot(df, columns):  
     df_melted = df[columns].melt(var_name='Metric', value_name='Value')
@@ -152,9 +154,10 @@ def box_plot(df, columns):
     
     st.plotly_chart(fig)
 
-    st.write("Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
-    st.write("_Mention how the happiness score in the box plot is relatively very small among others (Something about the value is only to 10, see CSV). Mention how the GDP per capita has many outliers and why do you think so many outliers are present._")
-    st.write("\n")
+    st.write("- The box plot shows a Happiness Score median of about 5.5, indicating moderate variability among countries, with most above the midpoint. The HDI median is around 740, suggesting high human development but notable disparities. The GDP per capita median of approximately 20,000 highlights significant economic inequalities, with outliers indicating extreme wealth.")
+    st.write("- The alcohol consumption data reveals a higher median for beer, indicating a widespread cultural preference, while spirits and wine show lower median consumption with fewer outliers, suggesting limited cultural integration.")
+    st.write("- Significant outliers in GDP and alcohol consumption highlight extreme cases, particularly among wealthier nations.")
+    st.write("- Potential correlations exist between beer consumption and higher happiness scores, suggesting social aspects of beer drinking may positively impact well-being.")
 
 def world_map(df):
     df['Avg_Alcohol_PerCapita'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
@@ -185,8 +188,29 @@ def world_map(df):
     st.plotly_chart(fig)
         
     st.write("This map visualizes the average alcohol consumption per capita by country, where each country is colored according to the level of alcohol consumption.")
-    st.write("_Mention how the area around the blue side in the center is on the lower part of the scare (Mention the countries) and how the Russian Federation is seemingly bright yellow, indicating the country being on the higher point of the scale. Enumerate the possibilities as to why they are at the bottom or why the russians seem to consume more alcohol that anywhere. Special mention the philippines and explain the possibiliteis why._")
-    st.write("\n")
+    st.write("🔴**High Alcohol Consumption**")
+    st.markdown("""
+    <ul>
+        <li>Countries in Eastern Europe and parts of Northern Europe (e.g., Russia, Belarus) are shaded in dark blue, indicating high average alcohol consumption.</li>
+        <li>Some areas in Oceania, such as Australia, also show relatively high levels of alcohol consumption.</li>
+    </ul>
+    """, unsafe_allow_html=True)
+
+    st.write("🟡**Moderate Alcohol Consumption**")
+    st.markdown("""
+    <ul>
+        <li>Countries in Western Europe (such as Germany, France, and the UK) display moderate shades of blue, suggesting a moderate level of alcohol consumption per capita (between 100 and 150 liters).</li>
+    </ul>
+    """, unsafe_allow_html=True)
+
+    st.write("🟢**Low Alcohol Consumption**")
+    st.markdown("""
+    <ul>
+        <li>Many countries in Africa, parts of Asia, and South America are shaded in very light blue or white, indicating low or minimal alcohol consumption per capita.</li>
+    </ul>
+    """, unsafe_allow_html=True)
+
+    
 
 def grouped_by_chart(df):
     region_alcohol_consumption = df.groupby('Region')[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean().reset_index()
@@ -220,8 +244,8 @@ def grouped_by_chart(df):
     )
     
     st.plotly_chart(fig, use_container_width=True)    
+    st.write("The graph illustrates significant regional disparities in alcohol consumption, reflecting cultural, economic, and social factors. Western Europe shows the highest wine consumption, while North America and Central & Eastern Europe prefer beer and spirits, respectively. Regions like Africa and Asia exhibit lower averages across all types.")
     st.write("Consumption patterns highlight distinct regional preferences, with Western Europe favoring wine, while North America and Central & Eastern Europe prefer beer and spirits, respectively.")
-    st.write("_Add the highest and lowest consumption of beer, spirit, and wine. Why do you think that region is the highest of beer, spirit, and wine?_")
     
 def ave_alcohol_consumption(df):
     mean_values = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean().reset_index()
@@ -258,8 +282,10 @@ def ave_alcohol_consumption(df):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")   
-    st.write("_Highlight that among the three, it is the beer that is the highest and wine as the lowest. Why do you think beer is the highest and wine is the lowest?_")
+    st.write("🍺 **Beer**: Shows the highest average consumption, indicating its popularity among consumers.")   
+    st.write("🍷 **Spirits**: Reflects moderate consumption levels, suggesting a notable but lesser preference compared to beer.")
+    st.write("🍾 **Wine**: Exhibits the lowest average consumption, highlighting its relatively niche appeal.")
+    st.write("These trends underscore varying cultural preferences for alcohol types, which can inform public health initiatives and market strategies tailored to consumer behavior.")
 
 def horizontal_bar_chart(df):    
     avg_happiness_by_region = df.groupby('Region')['HappinessScore'].mean().reset_index()
@@ -299,10 +325,12 @@ def horizontal_bar_chart(df):
     )
     
     st.plotly_chart(fig, use_container_width=True)
-    
-    st.write("The chart highlights the top 10 regions with the highest average happiness scores.")
-    st.write("_Mention that out of the scale, what is the region with highest happines score? Why do you think people are happy in that region?_")
-    st.write("\n")
+    st.write("This chart highlights the top 10 regions with the highest average happiness scores.")
+    st.write("🇨🇿 **Czech Republic**: Leads in total alcohol consumption per capita, highlighting a strong cultural acceptance and integration of alcohol in daily life.")   
+    st.write("🇷🇺 **Russia**: Following closely, indicating a significant cultural inclination towards alcohol, particularly spirits like vodka, which are embedded in social traditions.")
+    st.write("🇫🇷 **France**: Ranks third, reflecting its renowned wine culture, where alcohol consumption is often associated with meals and social gatherings.")
+    st.write("🇩🇪 **Germany**: High consumption levels, influenced by its beer culture and festivals like Oktoberfest, which celebrate communal drinking.")
+    st.write("🇱🇹 **Lithuania**, 🇱🇺 **Luxembourg**, 🇭🇺 **Hungary**, 🇸🇰 **Slovakia**, 🇵🇱 **Poland**, and 🇵🇹 **Portugal**: These countries show moderate to high alcohol consumption, suggesting a robust cultural presence of alcohol that may impact public health and social dynamics.")
 
 def custom_pairplots(df, columns):
     st.subheader("Pair Plot of Various Metrics with Trendlines")
@@ -366,8 +394,6 @@ def dynamic_regression_plot(df, columns):
 
     st.plotly_chart(fig)
     
-    st.write("_Compare in the heatmap (closest to 1 and -1 in the heatmap). Say how the closest to 1 has clearly a positive or direct relationship as shown with the trendline and how the closest to -1 has a clear negative or inverse relationship. Mention that the relationship between variables with closest to 0 value in the heatmap has a no definite relationship._")
-    st.write("\n")
 
 def dynamic_histogram(df, columns):
     st.write("__Dynamic Histogram Plot__")
@@ -417,8 +443,8 @@ def dynamic_histogram(df, columns):
     )
     
     st.plotly_chart(fig)
-    st.write("_Interpret this to maybe 2-3 lines, idk how to interpret this._")
-    st.write("\n")
+    st.write("- There is a potential relationship between Happiness and HDI. Both distributions show a similar pattern of skewness, suggesting a potential positive correlation between happiness and human development.")
+    st.write("- A potential relationship between GDP per capita and alcohol consumption can also be seen. All three alcohol consumption metrics (beer, spirit, and wine) show similar skewed distributions, suggesting a potential relationship between economic prosperity and alcohol consumption. However, further analysis would be needed to confirm any causal relationship.")
     
 def scatter_HDI_HS(df):
     fig = px.scatter(
@@ -459,7 +485,15 @@ def scatter_ALConsumption_GDP(df):
     
     st.plotly_chart(fig)
     
-    st.write("_Explain what the chart is about. Explain the relationship between alcohol consumption and GDP is. highlight the subsharan africa. # Does a higher GDP correlate with higher alcohol consumption? How does income inequality within a country affect alcohol consumption levels? Is there a difference in consumption between different socioeconomic groups? (Try to see the countries of the region as to what -world they are in (first world, third world))_")
+    st.markdown("""
+    <ul>
+        <li>This graph suggests that while the general trend shows a negative relationship between GDP and alcohol consumption, it varies significantly across regions. Cultural factors (e.g., religion, societal norms) likely play a major role in shaping alcohol consumption patterns, sometimes overriding economic factors.</li>
+        <li>While the trendline suggests a slight negative correlation between GDP per capita and alcohol consumption, this relationship is weak and varies across regions.</li>
+        <li>The Western Europe and North America regions show relatively high alcohol consumption paired with moderate to high GDP, standing out from the global trend.</li>
+        <li>Countries in regions like the Middle East and Northern Africa show low alcohol consumption despite high GDP, likely due to cultural and religious factors.</li>
+        <li>The Sub-Saharan Africa and Eastern Asia regions display lower GDP and alcohol consumption, with most countries clustered at the lower end of both metrics.</li>
+    </ul>
+    """, unsafe_allow_html=True)
 
 def scatter_ALConsumption_HDI(df):
     df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
@@ -481,7 +515,14 @@ def scatter_ALConsumption_HDI(df):
     
     st.plotly_chart(fig)
     
-    st.write("_Explain what the chart is about. Explain the relationship between alcohol consumption and HDI is. highlight the subsharan africa. What is the correlation between HDI and alcohol consumption per capita in different countries? Do social factors affect alcohol consumption? How does the level of education, as part of HDI, influence alcohol consumption patterns? How do income levels, as part of the HDI calculation, affect alcohol consumption?_")
+    st.markdown("""
+    <ul>
+        <li>This graph shows the relationship between the Human Development Index and the Average Alcohol Consumption per capita.</li>
+        <li>The plot likely reveals a positive correlation between Average Alcohol Consumption Per Capita and HDI. This suggests that, on average, countries with higher alcohol consumption also tend to have higher HDI scores, indicating better overall development and quality of life.</li>
+        <li>Western European countries tend to cluster in the high HDI and high average alcohol consumption area, reflecting cultural acceptance and regulation of alcohol linked to higher socio-economic status. In contrast, Sub-Saharan Africa shows a cluster of lower HDI and alcohol consumption, indicating socio-economic challenges that affect both development and drinking patterns.</li>
+        <li>There is a positive correlation between average alcohol consumption per capita and Human Development Index (HDI) across most regions, indicating that higher alcohol consumption often coincides with higher HDI.</li>
+    </ul>
+    """, unsafe_allow_html=True)
     
 def scatter_ALConsumption_HS(df):
     df['Average_Alcohol_Consumption'] = df[['Beer_PerCapita', 'Spirit_PerCapita', 'Wine_PerCapita']].mean(axis=1)
@@ -502,8 +543,13 @@ def scatter_ALConsumption_HS(df):
     )
     
     st.plotly_chart(fig)
-    st.write("_Explain what the chart is. What are these variables. highlight the middle east and northern africa as to why they  are the only region who has a clear positive relationship. Does a higher happiness score correlate with increased or decreased alcohol consumption? Are individuals who consume alcohol in moderation happier than those who abstain or overconsume? Do alcohol consumption really affect the happiness of a person?_")
-    st.write("\n")
+    st.markdown("""
+    <ul>
+        <li>This graph shows the relationship between the Happiness Score and Average Alcohol Consumption per capita, grouped by region.</li>
+        <li>There appears to be a positive correlation between average alcohol consumption and happiness scores. As average alcohol consumption increases, happiness scores tend to rise, suggesting that higher alcohol consumption may be associated with greater levels of reported happiness in certain contexts.</li>
+        <li>The relationship between alcohol consumption and happiness scores varies significantly across different regions. While some regions show a positive correlation, others show little to no correlation or even a negative correlation.</li>
+    </ul>
+    """, unsafe_allow_html=True)
 
 # Sidebar
 options = st.sidebar.selectbox("Select a section:", 
