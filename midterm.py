@@ -40,12 +40,13 @@ def show_col_names():
 def clean_csv(df):
     df.dropna(inplace=True) 
     df.drop_duplicates(inplace=True) 
+    df.drop(columns=['Hemisphere'], inplace=True)  # {{ edit_1 }} Added line to drop the 'Hemisphere' column
     return df
     
 def show_clean(df):
     st.subheader("Cleaning the Dataset")
     df = clean_csv(df)
-    col1, col2 = st.columns(2, gap='large')
+    col1, col2, col3 = st.columns(3, gap='large')  # {{ edit_2 }} Updated to include a third column
     with col1:
         st.write("__Handling Missing Values__")
         code = '''
@@ -67,6 +68,17 @@ def show_clean(df):
         "The `df.drop_duplicates()` function removes any duplicate rows from the DataFrame, ensuring that each record is unique. "
         "This process is essential for maintaining data integrity and avoiding skewed analysis results, and using `inplace=True` updates the DataFrame directly."
     )
+        
+    with col3:  # {{ edit_3 }} Added explanation for dropping the 'Hemisphere' column
+        st.write("__Dropping 'Hemisphere' Column__")
+        code = '''
+        df.drop(columns=['Hemisphere'], inplace=True)'''
+        st.code(code, language="python")
+        
+        st.write(
+        "The `df.drop(columns=['Hemisphere'], inplace=True)` method removes the 'Hemisphere' column from the DataFrame. "
+        "This is done to simplify the dataset by eliminating unnecessary information that may not contribute to the analysis."
+        )
         
     st.write("\n")
     
@@ -552,7 +564,7 @@ if options == "Introduction":
     st.write("")
     st.write("")
     st.write("### The Team ✨")
-    
+    st.write("Meet the team members who made the exploration possible.")
     # Function to encode the image
     def img_to_base64(img_path):
         with open(img_path, "rb") as img_file:
