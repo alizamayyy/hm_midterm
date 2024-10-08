@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
+import base64
 
 st.set_page_config(page_title="Kanpai!!", page_icon=":beer:", layout="wide", initial_sidebar_state="auto")
 
@@ -557,23 +558,91 @@ options = st.sidebar.selectbox("Select a section:",
                                  "Data Visualization", "Conclusion"])
 
 # Application
-st.header("Happiness and Alcohol Consumption Analysis") 
+st.header("Happiness and Alcohol Consumption Analysis 🍺")
 st.markdown("<small>by Halimaw Magbeg</small>", unsafe_allow_html=True) 
 
 if options == "Introduction":
    
     st.write("Happiness and well-being are increasingly central themes in global discussions about public health, societal development, and policy making. One aspect of human behavior that has been closely studied in relation to mental health and happiness is alcohol consumption.")
-    st.write("Does higher alcohol consumption lead to lower happiness levels? Or are happier countries more likely to have higher alcohol consumption due to social factors?")
+    st.write(" **_Does higher alcohol consumption lead to lower happiness levels?_** Or are **_happier countries more likely to have higher alcohol consumption due to social factors?_**")
     st.write("The aim of this analysis is to explore how alcohol consumption correlates with happiness levels.")
     st.write("The dataset is taken from [Kaggle](https://www.kaggle.com/datasets/marcospessotto/happiness-and-alcohol-consumption).")
-    col1, col2, col3= st.columns(3)
-    with col1:
-        st.image("giphy.gif", )
-    with col2:
-        st.image("beer-happy.gif", )
-    with col3:
-        st.image("cheers.gif", )
-       
+    
+    st.write("")
+    st.write("")
+    st.write("")
+    st.write("### The Team ✨")
+    
+            # Function to encode the image
+    def img_to_base64(img_path):
+        with open(img_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode('utf-8')
+
+    # Encode the image
+    bataluna = img_to_base64("images/bataluna.jpg")
+    mier = img_to_base64("images/mier.png")
+    alegam = img_to_base64("images/alegam.png")
+    madaya = img_to_base64("images/madaya.jpg")
+    cabo = img_to_base64("images/cabo.jpg")
+
+    # Create a 3x2 grid of divs with rounded corners, drop shadows, and hover effects
+    grid_html = """
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .grid-item {
+            background-color: #0e1117;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 250px;  /* Set a fixed width */
+            height: 250px;
+            font-size: 24px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            flex-direction: column;
+            padding-top: 30px;
+            
+        }
+        .grid-item:hover {
+            background-color: #8b0026;
+        }
+        .grid-item img {
+            width: 150px;  /* Set a fixed width */
+            height: 150px; /* Set a fixed height */
+            object-fit: cover; 
+            padding-bottom: 10px;
+            
+            
+            border-radius: 100px;  // {{ edit_1 }} Added border-radius for rounded corners
+        }
+    </style>
+    <div class="grid-container">
+    """
+
+    # Add items to the grid (5 items)
+    grid_items = [
+        (bataluna, "Aliza May Bataluna"),
+        (mier, "France Gieb Mier"),
+        (alegam, "Cielo Alegam"),
+        (madaya, "Angela Madaya"),
+        (cabo, "Kerch Cabo"),
+    ]
+
+    for img, label in grid_items:
+        grid_html += f'<div class="grid-item"><img src="data:image/png;base64,{img}" alt="{label}"><p>{label}</p></div>'
+
+    grid_html += "</div>"
+
+    st.markdown(grid_html, unsafe_allow_html=True)
+
 
 elif options == "Data Exploration and Preparation":
     st.subheader("Dataset Overview")
